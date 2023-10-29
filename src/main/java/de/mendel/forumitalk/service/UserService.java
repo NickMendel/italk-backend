@@ -3,7 +3,9 @@ package de.mendel.forumitalk.service;
 import de.mendel.forumitalk.dao.UserDao;
 import de.mendel.forumitalk.dto.UserDto;
 import de.mendel.forumitalk.dto.UserMapper;
+import de.mendel.forumitalk.exceptions.EmailInUseException;
 import de.mendel.forumitalk.exceptions.NotFoundException;
+import de.mendel.forumitalk.exceptions.UsernameInUseException;
 import de.mendel.forumitalk.model.User;
 import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,14 @@ public class UserService {
 
 
     public UserDto createUser(UserDto userDto) {
+        User existingUser = userDao.findByUsername(userDto.getUsername());
+        if (existingUser != null) {
+            throw new UsernameInUseException("Username already taken!");
+        }
+        User existingEmail = userDao.findByEmail(userDto.getEmail());
+        if (existingEmail != null) {
+            throw new EmailInUseException("Email already taken!");
+        }
         User user = userMapper.mapToEntity(userDto);
         User savedUser = userDao.save(user);
 
@@ -56,24 +66,20 @@ public class UserService {
     }
 
     public UserDto updateUser(UserDto userDto) {
-        User existingUser = userDao.findById(userDto.getId());
+        User existingUser = userDao.findById(userDto.getUser_id());
         if (existingUser != null) {
-            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-            Validator validator = factory.getValidator();
-            Set<ConstraintViolation<UserDto>> violations = validator.validate(userDto);
-
-            if (violations.isEmpty()) {
-                existingUser.setUsername(userDto.getUsername());
-                existingUser.setEmail(userDto.getEmail());
-                existingUser.setPassword(userDto.getPassword());
-
-                User updatedUser = userDao.save(existingUser);
-                return userMapper.mapToDto(updatedUser);
-            } else {
-                throw new ValidationException("Validation failed for user with ID: " + userDto.getId());
+            User userWithNewEmail = userDao.findByEmail(userDto.getEmail());
+            if (userWithNewEmail != null && !userWithNewEmail.getUser_id().equals(userDto.getUser_id())) {
+                throw new EmailInUseException("Email already taken!");
             }
+
+            existingUser.setEmail(userDto.getEmail());
+            existingUser.setPassword(userDto.getPassword());
+
+            User savedUser = userDao.save(existingUser);
+            return userMapper.mapToDto(savedUser);
         } else {
-            throw new NotFoundException("User not found with ID: " + userDto.getId());
+            throw new NotFoundException("User with ID: " + userDto.getUser_id() + " does not exist!");
         }
     }
 

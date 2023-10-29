@@ -1,34 +1,37 @@
 package de.mendel.forumitalk.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "sections")
 @Entity
-public class Section {
+@Table(name = "topics")
+public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "section_id")
-    private Long section_id;
+    @Column(name = "topic_id")
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 30)
-    private String name;
+    private String title;
 
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Topic> topics = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "section_id", nullable = false)
+    private Section section;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User author;
 }
