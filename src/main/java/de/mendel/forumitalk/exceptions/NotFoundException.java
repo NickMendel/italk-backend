@@ -1,0 +1,7 @@
+package de.mendel.forumitalk.exceptions;
+
+public class NotFoundException extends RuntimeException {
+    public NotFoundException(String message) {
+        super(message);
+    }
+}
