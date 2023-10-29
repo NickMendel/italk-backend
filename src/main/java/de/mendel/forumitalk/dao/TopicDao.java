@@ -38,10 +38,6 @@ public class TopicDao {
         repository.deleteById(id);
     }
 
-    public void deleteAll() {
-        repository.deleteAll();
-    }
-
     public List<Topic> findAll() {
         return repository.findAll();
     }

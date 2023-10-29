@@ -30,5 +30,6 @@ public class Section {
     private String description;
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "section-topic")
     private List<Topic> topics = new ArrayList<>();
 }

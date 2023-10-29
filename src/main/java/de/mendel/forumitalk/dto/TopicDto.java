@@ -11,22 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TopicDto {
 
-        private Long id;
+        private Long topic_id;
         @NotBlank
-        @Max(30)
+        @Max(60)
         private String title;
         @NotBlank
         private String description;
-        @NotBlank
         private Section section;
-        @NotBlank
-        private User author;
+        private User user;
 
-        public TopicDto(Long id, String title, String description, Section section, User author) {
-            this.id = id;
+        public TopicDto(Long topic_id, String title, String description, Section section, User user) {
+            this.topic_id = topic_id;
             this.title = title;
             this.description = description;
             this.section = section;
-            this.author = author;
+            this.user = user;
         }
 }

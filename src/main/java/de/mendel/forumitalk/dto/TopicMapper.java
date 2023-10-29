@@ -10,11 +10,11 @@ import java.util.List;
 public class TopicMapper {
 
     public TopicDto mapToDto(Topic topic) {
-        return new TopicDto(topic.getId(), topic.getTitle(), topic.getDescription(), topic.getSection(), topic.getAuthor());
+        return new TopicDto(topic.getTopic_id(), topic.getTitle(), topic.getDescription(), topic.getSection(), topic.getUser());
     }
 
     public Topic mapToEntity(TopicDto topicDto) {
-        return new Topic(topicDto.getId(), topicDto.getTitle(), topicDto.getDescription(), topicDto.getSection(), topicDto.getAuthor());
+        return new Topic(topicDto.getTopic_id(), topicDto.getTitle(), topicDto.getDescription(), topicDto.getSection(), topicDto.getUser());
     }
 
     public List<TopicDto> mapToDtoList(List<Topic> topics) {

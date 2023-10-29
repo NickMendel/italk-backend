@@ -29,9 +29,9 @@ public class TopicService {
         this.sectionMapper = sectionMapper;
     }
 
-    public TopicDto createTopic(TopicDto topicDto) {
+    public TopicDto createTopic(TopicDto topicDto, Long section_id) {
         Topic topic = topicMapper.mapToEntity(topicDto);
-        Section section = sectionDao.findById(topicDto.getSection().getSection_id());
+        Section section = sectionDao.findById(section_id);
         topic.setSection(section);
         Topic savedTopic = topicDao.save(topic);
 
@@ -56,7 +56,7 @@ public class TopicService {
     }
 
     public TopicDto updateTopic(TopicDto topicDto) {
-        Topic existingTopic = topicDao.findById(topicDto.getId());
+        Topic existingTopic = topicDao.findById(topicDto.getTopic_id());
         if (existingTopic != null) {
             Topic topic = topicMapper.mapToEntity(topicDto);
             Section section = sectionDao.findById(topicDto.getSection().getSection_id());
@@ -64,7 +64,7 @@ public class TopicService {
             Topic savedTopic = topicDao.save(topic);
             return topicMapper.mapToDto(savedTopic);
         } else {
-            throw new NotFoundException("Topic with ID: " + topicDto.getId() + " does not exist");
+            throw new NotFoundException("Topic with ID: " + topicDto.getTopic_id() + " does not exist");
         }
     }
 
