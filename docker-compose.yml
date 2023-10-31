@@ -1,0 +1,27 @@
+version: '1.0'
+services:
+  italk-backend:
+    image: italk-backend
+    container_name: italk-backend
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=${POSTGRES_URL}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+        - postgres-db
+  postgres-db:
+    image: postgres:13.0
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - /db/scripts/custom_init-script.sql
+    ports:
+      - "5432:5432"
