@@ -17,7 +17,9 @@ public class TopicDto {
         private String title;
         @NotBlank
         private String description;
+        @NotBlank
         private Section section;
+        @NotBlank
         private User user;
 
         public TopicDto(Long topic_id, String title, String description, Section section, User user) {

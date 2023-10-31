@@ -20,7 +20,7 @@ public class Topic {
     @Column(name = "topic_id")
     private Long topic_id;
 
-    @Column(nullable = false, unique = true, length = 30)
+    @Column(nullable = false, unique = true, length = 60)
     private String title;
 
     @Column(nullable = false)

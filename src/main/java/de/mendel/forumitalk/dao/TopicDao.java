@@ -30,14 +30,13 @@ public class TopicDao {
         return repository.findByTitle(title);
     }
 
-    public void delete(Topic topic) {
+    public void deleteByTopic(Topic topic) {
         repository.delete(topic);
     }
 
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
-
     public List<Topic> findAll() {
         return repository.findAll();
     }
