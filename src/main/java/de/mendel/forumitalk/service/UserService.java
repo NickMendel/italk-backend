@@ -7,12 +7,10 @@ import de.mendel.forumitalk.exceptions.EmailInUseException;
 import de.mendel.forumitalk.exceptions.NotFoundException;
 import de.mendel.forumitalk.exceptions.UsernameInUseException;
 import de.mendel.forumitalk.model.User;
-import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserService {

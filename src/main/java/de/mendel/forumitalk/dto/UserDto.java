@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class UserDto {
+
     private Long user_id;
     @NotBlank
     @Max(30)

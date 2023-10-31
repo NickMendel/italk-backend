@@ -26,9 +26,6 @@ public class TopicDao {
         return repository.findById(id).orElse(null);
     }
 
-    public Topic findByTitle(String title) {
-        return repository.findByTitle(title);
-    }
 
     public void deleteByTopic(Topic topic) {
         repository.delete(topic);
