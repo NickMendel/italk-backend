@@ -10,11 +10,11 @@ import java.util.List;
 public class SectionMapper {
 
     public SectionDto mapToDto(Section section) {
-        return new SectionDto(section.getSection_id(), section.getName(), section.getDescription(), section.getTopics());
+        return new SectionDto(section.getSection_id(), section.getTitle(), section.getDescription(), section.getTopics());
     }
 
     public Section mapToEntity(SectionDto sectionDto) {
-        return new Section(sectionDto.getId(), sectionDto.getName(), sectionDto.getDescription(), sectionDto.getTopics());
+        return new Section(sectionDto.getId(), sectionDto.getTitle(), sectionDto.getDescription(), sectionDto.getTopics());
     }
 
     public List<SectionDto> mapToDtoList(List<Section> sections) {

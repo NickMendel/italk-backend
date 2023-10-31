@@ -25,8 +25,8 @@ public class SectionDao {
         return repository.findById(id).orElse(null);
     }
 
-    public Section findByName(String name) {
-        return repository.findByName(name);
+    public Section findByTitle(String title) {
+        return repository.findByTitle(title);
     }
 
     public void delete(Section section) {

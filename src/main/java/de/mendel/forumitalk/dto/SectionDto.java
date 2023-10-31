@@ -14,16 +14,16 @@ public class SectionDto {
 
     private Long id;
     @NotBlank
-    @Max(30)
-    private String name;
+    @Max(45)
+    private String title;
     @NotBlank
     private String description;
 
     private List<Topic> topics;
 
-    public SectionDto(Long id, String name, String description, List<Topic> topics) {
+    public SectionDto(Long id, String title, String description, List<Topic> topics) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.description = description;
         this.topics = topics;
     }

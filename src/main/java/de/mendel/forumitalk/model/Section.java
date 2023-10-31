@@ -23,8 +23,8 @@ public class Section {
     @Column(name = "section_id")
     private Long section_id;
 
-    @Column(nullable = false, unique = true, length = 30)
-    private String name;
+    @Column(nullable = false, unique = true, length = 45)
+    private String title;
 
     @Column(nullable = false)
     private String description;

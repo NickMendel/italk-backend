@@ -23,6 +23,9 @@ public class SectionService {
     }
 
     public SectionDto createSection(SectionDto sectionDto) {
+        if (sectionDao.findByTitle(sectionDto.getTitle()) != null) {
+            throw new NotFoundException("Section with name: " + sectionDto.getTitle() + " already exists");
+        }
         Section section = sectionMapper.mapToEntity(sectionDto);
         Section savedSection = sectionDao.save(section);
 
