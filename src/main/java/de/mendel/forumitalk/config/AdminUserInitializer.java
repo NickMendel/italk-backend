@@ -15,7 +15,7 @@ public class AdminUserInitializer implements ApplicationRunner {
 
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         if (userService.findUserByUsername("admin") == null) {
             userService.createNewAdminUser(new AdminUserRegistrationRequest());
         }
