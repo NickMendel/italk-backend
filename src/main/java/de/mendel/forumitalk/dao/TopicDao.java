@@ -2,6 +2,7 @@ package de.mendel.forumitalk.dao;
 
 import de.mendel.forumitalk.model.Section;
 import de.mendel.forumitalk.model.Topic;
+import de.mendel.forumitalk.model.User;
 import de.mendel.forumitalk.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,11 +35,16 @@ public class TopicDao {
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
+
     public List<Topic> findAll() {
         return repository.findAll();
     }
 
     public List<Topic> findTopicsBySection(Section section) {
         return repository.findTopicsBySection(section);
+    }
+
+    public List<Topic> findTopicsByUser(User user) {
+        return repository.findTopicsByUser(user);
     }
 }

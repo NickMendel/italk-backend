@@ -9,11 +9,15 @@ import de.mendel.forumitalk.dto.TopicMapper;
 import de.mendel.forumitalk.exceptions.NotFoundException;
 import de.mendel.forumitalk.model.Section;
 import de.mendel.forumitalk.model.Topic;
+import de.mendel.forumitalk.model.User;
+import de.mendel.forumitalk.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TopicService {
 
     private final TopicDao topicDao;
@@ -21,13 +25,9 @@ public class TopicService {
     private final TopicMapper topicMapper;
 
     private final SectionMapper sectionMapper;
+    private final UserRepository userRepository;
 
-    public TopicService(TopicDao topicDao, SectionDao sectionDao, TopicMapper topicMapper, SectionMapper sectionMapper) {
-        this.topicDao = topicDao;
-        this.sectionDao = sectionDao;
-        this.topicMapper = topicMapper;
-        this.sectionMapper = sectionMapper;
-    }
+
 
     public TopicDto createTopic(TopicDto topicDto) {
         Topic topic = topicMapper.mapToEntity(topicDto);
@@ -44,6 +44,20 @@ public class TopicService {
             throw new NotFoundException("Topic not find with ID: " + id);
         }
         return topicMapper.mapToDto(topic);
+    }
+
+    public List<TopicDto> getAllTopics() {
+        return topicMapper.mapToDtoList(topicDao.findAll());
+    }
+
+    public List<TopicDto> getTopicsBySection(SectionDto sectionDto) {
+        Section section = sectionMapper.mapToEntity(sectionDto);
+        return topicMapper.mapToDtoList(topicDao.findTopicsBySection(section));
+    }
+
+    public List<TopicDto> getTopicsForDashboard(User user) {
+        List <Topic> topics = user.getTopics();
+        return topicMapper.mapToDtoList(topics);
     }
 
     public void deleteTopic(TopicDto topicDto) {
@@ -77,12 +91,5 @@ public class TopicService {
         }
     }
 
-    public List<TopicDto> getAllTopics() {
-        return topicMapper.mapToDtoList(topicDao.findAll());
-    }
 
-    public List<TopicDto> getTopicsBySection(SectionDto sectionDto) {
-        Section section = sectionMapper.mapToEntity(sectionDto);
-        return topicMapper.mapToDtoList(topicDao.findTopicsBySection(section));
-    }
 }
