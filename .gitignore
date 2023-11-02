@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 .env
 tasksAndIdeas.txt
+tasksAndIdeas.md
 ### STS ###
 .apt_generated
 .classpath
