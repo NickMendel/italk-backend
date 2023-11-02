@@ -1,5 +1,6 @@
 package de.mendel.forumitalk.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,11 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
+
+    @Column(nullable = false)
+    private UserRole role = UserRole.USER;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference(value = "user-topic")
