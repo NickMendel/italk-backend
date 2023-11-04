@@ -1,45 +1,35 @@
 package de.mendel.forumitalk.service;
 
-import de.mendel.forumitalk.dto.AdminUserRegistrationRequest;
-import de.mendel.forumitalk.dto.ChangePasswordRequest;
-import de.mendel.forumitalk.dto.UserRegistrationRequest;
-import de.mendel.forumitalk.dto.UserUpdateEmailRequest;
+import de.mendel.forumitalk.dto.*;
 import de.mendel.forumitalk.exceptions.EmailInUseException;
 import de.mendel.forumitalk.exceptions.NotFoundException;
 import de.mendel.forumitalk.exceptions.UsernameInUseException;
+import de.mendel.forumitalk.mapper.UserMapper;
 import de.mendel.forumitalk.model.User;
 import de.mendel.forumitalk.repository.UserRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    private final static List<UserDetails> APPLICATION_USERS = Arrays.asList(
-            new org.springframework.security.core.userdetails.User("admin", "admin", Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))),
-            new org.springframework.security.core.userdetails.User("user", "user", Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")))
-    );
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
+    private final UserMapper userMapper;
 
     @Transactional
     public void registerNewUser(UserRegistrationRequest userRegistrationRequest) {
         if (userRepository.findByUsername(userRegistrationRequest.getUsername()) == null) {
             if (userRepository.findByEmail(userRegistrationRequest.getEmail()) == null) {
+                String newPassword = userRegistrationRequest.getNewPassword();
+                if (newPassword == null || newPassword.isEmpty()) {
+                    throw new IllegalArgumentException("Password cannot be null or empty!");
+                }
                 String hashedPassword = passwordEncoder.encode(userRegistrationRequest.getNewPassword());
                 User newUser = new User();
                 newUser.setUsername(userRegistrationRequest.getUsername());
@@ -66,17 +56,18 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+    public UserDto getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+        return userMapper.mapToDto(user)
     }
 
     @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             throw new NotFoundException("No users found!");
         } else {
-            return users;
+            return userMapper.mapListToDto(users));
         }
     }
 
@@ -87,38 +78,30 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserEmail(User currentUser, UserUpdateEmailRequest userUpdateEmailRequest) {
-        if (userRepository.findByEmail(userUpdateEmailRequest.getNewEmail()) == null || currentUser.getEmail().equals(userUpdateEmailRequest.getNewEmail())) {
-            currentUser.setEmail(userUpdateEmailRequest.getNewEmail());
-            userRepository.save(currentUser);
+    public void updateUserEmail(Long id, UserUpdateEmailRequest userUpdateEmailRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+        if (userRepository.findByEmail(userUpdateEmailRequest.getNewEmail()) == null || user.getEmail().equals(userUpdateEmailRequest.getNewEmail())) {
+            user.setEmail(userUpdateEmailRequest.getNewEmail());
+            userRepository.save(user);
         } else {
             throw new EmailInUseException("Email already taken!");
         }
     }
 
     @Transactional
-    public User changePassword(Long id, ChangePasswordRequest changePasswordRequest) {
-        User currentUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
-        String hashedOldPassword = passwordEncoder.encode(changePasswordRequest.getOldPassword());
-        if (!currentUser.getPassword().matches(hashedOldPassword)) {
+    public void changeUserPassword(Long id, ChangePasswordRequest request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+        String hashedOldPassword = passwordEncoder.encode(request.getOldPassword());
+        if (!user.getPassword().matches(hashedOldPassword)) {
             throw new NotFoundException("Old password is incorrect!");
         }
-        String hashedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
-        currentUser.setPassword(hashedPassword);
-        userRepository.save(currentUser);
-        return currentUser;
+        String hashedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
     }
-/*
-    public UserDetails findUserByUsername(String username) {
-        return APPLICATION_USERS.stream()
-                .filter(userDetails -> userDetails.getUsername().equals(username))
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
- */
 
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDto findUserByUsername(String username) {
+        return userMapper.mapToDto(userRepository.findByUsername(username));
     }
 }
 

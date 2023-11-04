@@ -5,15 +5,15 @@ import de.mendel.forumitalk.dto.UserRegistrationRequest;
 import de.mendel.forumitalk.dto.UserUpdateEmailRequest;
 import de.mendel.forumitalk.model.User;
 import de.mendel.forumitalk.service.UserService;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("api/v1")
+@CrossOrigin("*")
 public class UserController {
 
     private final UserService service;
@@ -25,41 +25,31 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> createUser(@RequestBody UserRegistrationRequest userRegistrationRequest) {
-        service.registerNewUser(userRegistrationRequest);
-        return ResponseEntity.status(HttpStatus.OK).body("User created successfully!");
-    }
-
-    @PostMapping("/{id}/profile/change-password")
-    public ResponseEntity<String> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest changePasswordRequest) {
-        service.changePassword(id, changePasswordRequest);
-        return ResponseEntity.ok("Password changed successfully!");
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = service.getUserById(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+        try {
+            service.registerNewUser(userRegistrationRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully!");
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation Error: " + e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = service.getAllUsers();
-        return ResponseEntity.ok(users);
+    @PostMapping("/profile/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody User user, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        try {
+            service.changeUserPassword(user.getUser_id(), changePasswordRequest);
+            return ResponseEntity.ok("Password changed successfully!");
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation Error: " + e.getMessage());
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        service.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}/profile/update-email")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserUpdateEmailRequest userUpdateEmailRequest) {
-        User currentUser = service.getUserById(id);
-        service.updateUserEmail(currentUser, userUpdateEmailRequest);
-        return ResponseEntity.ok("User updated successfully!");
+    @PutMapping("/profile/update-email")
+    public ResponseEntity<String> updateUserEmail(@RequestBody UserUpdateEmailRequest userUpdateEmailRequest, @RequestBody User user) {
+        try {
+            service.updateUserEmail(user.getUser_id(), userUpdateEmailRequest);
+            return ResponseEntity.ok("Email updated successfully!");
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation Error: " + e.getMessage());
+        }
     }
 }

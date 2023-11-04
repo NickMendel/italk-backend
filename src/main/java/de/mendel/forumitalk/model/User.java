@@ -11,6 +11,9 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * User entity class
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,12 +21,13 @@ import java.util.List;
 @Table(name = "users")
 @Entity
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long user_id;
 
-    @Column(nullable = false, unique = true, length = 30, updatable = false)
+    @Column(nullable = false, unique = true, length = 20, updatable = false)
     private String username;
 
     @Column(nullable = false, unique = true)

@@ -4,15 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class UserRegistrationRequest {
-
+@AllArgsConstructor
+public class UserDto {
     @NotBlank(message = "Username is mandatory")
     @Max(value = 20, message = "Username must be less than 20 characters")
     @Min(value = 3, message = "Username must be at least 3 characters")
@@ -21,8 +20,4 @@ public class UserRegistrationRequest {
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
     private String email;
-
-    @NotBlank(message = "Password is mandatory")
-    @Min(value = 8, message = "Password must be at least 8 characters")
-    private String newPassword;
 }

@@ -13,7 +13,6 @@ public class AdminUserInitializer implements ApplicationRunner {
 
     private final UserService userService;
 
-
     @Override
     public void run(ApplicationArguments args) {
         if (userService.findUserByUsername("admin") == null) {
