@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,4 +38,8 @@ public class Topic {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference(value = "user-topic")
     private User user;
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference(value = "topic-comment")
+    private List<Comment> comments = new ArrayList<>();
 }

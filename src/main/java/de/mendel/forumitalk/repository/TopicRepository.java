@@ -13,7 +13,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     Topic findByTitle(String title);
 
-    List<Topic> findTopicsBySection(Section section);
-
+    /* TODO: Implementation of findTopicByUser for User Dashboard
     List<Topic> findTopicsByUser(User user);
+     */
 }

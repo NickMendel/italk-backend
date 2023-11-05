@@ -1,9 +1,8 @@
 package de.mendel.forumitalk.controller;
 
-import de.mendel.forumitalk.dto.SectionDto;
 import de.mendel.forumitalk.dto.TopicDto;
-import de.mendel.forumitalk.service.SectionService;
 import de.mendel.forumitalk.service.TopicService;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +13,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/section/{section_id}/topics/")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class TopicController {
 
     private final TopicService topicService;
 
     @PostMapping
-    public ResponseEntity<TopicDto> createTopic(@RequestBody TopicDto topicDto) {
-        TopicDto createdTopic = topicService.createTopic(topicDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTopic);
+    public ResponseEntity<String> createTopic(@PathVariable Long section_id,
+                                              @RequestBody String username, @RequestBody TopicDto topicDto) {
+        try {
+            topicService.createTopic(section_id, username, topicDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Topic created successfully!");
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{topic_id}")
@@ -32,12 +37,6 @@ public class TopicController {
             return ResponseEntity.ok(topicDto);
         }
         return ResponseEntity.notFound().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TopicDto>> getTopicsBySection(@RequestBody SectionDto sectionDto) {
-        List<TopicDto> topics = topicService.getTopicsBySection(sectionDto);
-        return ResponseEntity.ok(topics);
     }
 
     @DeleteMapping("/{topic_id}")
@@ -52,9 +51,13 @@ public class TopicController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
-    public ResponseEntity<TopicDto> updateTopic(@RequestBody TopicDto topicDto) {
-        TopicDto updatedTopic = topicService.updateTopic(topicDto);
-        return ResponseEntity.ok(updatedTopic);
+    @PutMapping("/{topic_id}")
+    public ResponseEntity<String> updateTopic(@PathVariable Long topic_id, @RequestBody TopicDto topicDto) {
+        try {
+            topicService.updateTopic(topic_id, topicDto);
+            return ResponseEntity.ok("Topic updated successfully!");
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation Error: " + e.getMessage());
+        }
     }
 }

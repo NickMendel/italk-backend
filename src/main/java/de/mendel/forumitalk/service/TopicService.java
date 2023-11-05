@@ -1,18 +1,17 @@
 package de.mendel.forumitalk.service;
 
-import de.mendel.forumitalk.dao.SectionDao;
-import de.mendel.forumitalk.dao.TopicDao;
-import de.mendel.forumitalk.dto.SectionDto;
-import de.mendel.forumitalk.dto.SectionMapper;
 import de.mendel.forumitalk.dto.TopicDto;
-import de.mendel.forumitalk.dto.TopicMapper;
 import de.mendel.forumitalk.exceptions.NotFoundException;
+import de.mendel.forumitalk.mapper.TopicMapper;
 import de.mendel.forumitalk.model.Section;
 import de.mendel.forumitalk.model.Topic;
 import de.mendel.forumitalk.model.User;
+import de.mendel.forumitalk.repository.SectionRepository;
+import de.mendel.forumitalk.repository.TopicRepository;
 import de.mendel.forumitalk.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,76 +19,66 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TopicService {
 
-    private final TopicDao topicDao;
-    private final SectionDao sectionDao;
+    private final TopicRepository topicRepository;
+    private final SectionRepository sectionRepository;
     private final TopicMapper topicMapper;
-
-    private final SectionMapper sectionMapper;
     private final UserRepository userRepository;
 
 
-
-    public TopicDto createTopic(TopicDto topicDto) {
-        Topic topic = topicMapper.mapToEntity(topicDto);
-        Section section = sectionDao.findById(topicDto.getSection().getSection_id());
+    @Transactional
+    public TopicDto createTopic(Long section_id, String username, TopicDto topicDto) {
+        User user = userRepository.findByUsername(username);
+        Section section = sectionRepository.findById(section_id).orElseThrow(() ->
+                new NotFoundException("Section with ID: " + section_id + " does not exist!"));
+        Topic topic = new Topic();
+        topic.setTitle(topicDto.getTitle());
+        topic.setDescription(topicDto.getDescription());
         topic.setSection(section);
-        Topic savedTopic = topicDao.save(topic);
+        topic.setUser(user);
 
-        return topicMapper.mapToDto(savedTopic);
-    }
-
-    public TopicDto getTopicById(Long id) {
-        Topic topic = topicDao.findById(id);
-        if (topic == null) {
-            throw new NotFoundException("Topic not find with ID: " + id);
-        }
+        topicRepository.save(topic);
         return topicMapper.mapToDto(topic);
     }
 
-    public List<TopicDto> getAllTopics() {
-        return topicMapper.mapToDtoList(topicDao.findAll());
+    @Transactional(readOnly = true)
+    public TopicDto getTopicById(Long id) {
+        Topic topic = topicRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Topic with ID: " + id + " does not exist!"));
+        return topicMapper.mapToDto(topic);
     }
 
-    public List<TopicDto> getTopicsBySection(SectionDto sectionDto) {
-        Section section = sectionMapper.mapToEntity(sectionDto);
-        return topicMapper.mapToDtoList(topicDao.findTopicsBySection(section));
-    }
-
-    public List<TopicDto> getTopicsForDashboard(User user) {
-        List <Topic> topics = user.getTopics();
+    @Transactional(readOnly = true)
+    public List<TopicDto> getTopicsForDashboard(String username) {
+        User user = userRepository.findByUsername(username);
+        List<Topic> topics = user.getTopics();
         return topicMapper.mapToDtoList(topics);
     }
 
+    @Transactional
     public void deleteTopic(TopicDto topicDto) {
-        Topic topic = topicDao.findById(topicDto.getTopic_id());
+        Topic topic = topicRepository.findByTitle(topicDto.getTitle());
         if (topic != null) {
-            topicDao.deleteByTopic(topic);
+            topicRepository.delete(topic);
         } else {
-            throw new NotFoundException("Topic with ID: " + topicDto.getTopic_id() + " does not exist");
+            throw new NotFoundException("Topic with title: " + topicDto.getTitle() + " does not exist");
         }
     }
 
+    @Transactional
     public void deleteTopicById(Long id) {
-        Topic topic = topicDao.findById(id);
-        if (topic != null) {
-            topicDao.deleteById(id);
-        } else {
-            throw new NotFoundException("Topic with ID: " + id + " does not exist");
-        }
+        Topic topic = topicRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Topic with ID: " + id + " does not exist!"));
+        topicRepository.deleteById(topic.getTopic_id());
     }
 
-    public TopicDto updateTopic(TopicDto topicDto) {
-        Topic existingTopic = topicDao.findById(topicDto.getTopic_id());
-        if (existingTopic != null) {
-            Topic topic = topicMapper.mapToEntity(topicDto);
-            Section section = sectionDao.findById(topicDto.getSection().getSection_id());
-            topic.setSection(section);
-            Topic savedTopic = topicDao.save(topic);
-            return topicMapper.mapToDto(savedTopic);
-        } else {
-            throw new NotFoundException("Topic with ID: " + topicDto.getTopic_id() + " does not exist");
-        }
+    @Transactional
+    public TopicDto updateTopic(Long id, TopicDto topicDto) {
+        Topic topic = topicRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Topic with ID: " + id + " does not exist!"));
+
+        topic.setTitle(topicDto.getTitle());
+        topic.setDescription(topicDto.getDescription());
+        topicRepository.save(topic);
+        return topicMapper.mapToDto(topic);
     }
-
-
 }

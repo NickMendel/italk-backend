@@ -1,32 +1,26 @@
 package de.mendel.forumitalk.dto;
 
+import de.mendel.forumitalk.model.Comment;
 import de.mendel.forumitalk.model.Section;
 import de.mendel.forumitalk.model.User;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class TopicDto {
 
-        private Long topic_id;
-        @NotBlank
-        @Max(60)
-        private String title;
-        @NotBlank
-        private String description;
-        @NotBlank
-        private Section section;
-        @NotBlank
-        private User user;
-
-        public TopicDto(Long topic_id, String title, String description, Section section, User user) {
-            this.topic_id = topic_id;
-            this.title = title;
-            this.description = description;
-            this.section = section;
-            this.user = user;
-        }
+    @NotBlank(message = "Title cannot be empty")
+    @Max(value= 60, message = "Title cannot be longer than 60 characters")
+    private String title;
+    @NotBlank(message = "Description cannot be empty")
+    @Min(value = 10, message = "Description cannot be shorter than 10 characters")
+    private String description;
 }
