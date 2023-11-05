@@ -2,7 +2,6 @@ package de.mendel.forumitalk.mapper;
 
 import de.mendel.forumitalk.dto.UserDto;
 import de.mendel.forumitalk.model.User;
-import de.mendel.forumitalk.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

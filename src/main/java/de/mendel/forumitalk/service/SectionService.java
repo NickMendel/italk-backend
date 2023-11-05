@@ -61,14 +61,12 @@ public class SectionService {
     }
 
     @Transactional
-    public SectionDto updateSection(Long id, SectionDto sectionDto) {
+    public void updateSection(Long id, SectionDto sectionDto) {
         Section existingSection = sectionRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Section with ID: " + id + " does not exist"));
         existingSection.setTitle(sectionDto.getTitle());
         existingSection.setDescription(sectionDto.getDescription());
         sectionRepository.save(existingSection);
-        return sectionMapper.mapToDto(existingSection);
-
     }
 
 

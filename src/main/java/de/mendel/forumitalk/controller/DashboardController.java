@@ -1,7 +1,6 @@
 package de.mendel.forumitalk.controller;
 
 import de.mendel.forumitalk.dto.TopicDto;
-import de.mendel.forumitalk.model.User;
 import de.mendel.forumitalk.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -11,7 +11,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class SectionMapper {
-    private final TopicMapper topicMapper;
 
     public SectionDto mapToDto(Section section) {
         return new SectionDto(section.getTitle(), section.getDescription());

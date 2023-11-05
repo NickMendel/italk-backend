@@ -1,9 +1,5 @@
 package de.mendel.forumitalk.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 /* TODO: Delete this file if you don't need it.
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {

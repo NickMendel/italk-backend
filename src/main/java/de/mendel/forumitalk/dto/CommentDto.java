@@ -1,9 +1,6 @@
 package de.mendel.forumitalk.dto;
 
-import de.mendel.forumitalk.model.Topic;
-import de.mendel.forumitalk.model.User;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -2,7 +2,6 @@ package de.mendel.forumitalk.controller;
 
 import de.mendel.forumitalk.dto.SectionDto;
 import de.mendel.forumitalk.dto.TopicDto;
-import de.mendel.forumitalk.mapper.SectionMapper;
 import de.mendel.forumitalk.service.SectionService;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,6 @@
 package de.mendel.forumitalk.security;
 
 import de.mendel.forumitalk.repository.UserRepository;
-import de.mendel.forumitalk.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

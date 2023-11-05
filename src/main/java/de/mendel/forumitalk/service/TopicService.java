@@ -26,7 +26,7 @@ public class TopicService {
 
 
     @Transactional
-    public TopicDto createTopic(Long section_id, String username, TopicDto topicDto) {
+    public void createTopic(Long section_id, String username, TopicDto topicDto) {
         User user = userRepository.findByUsername(username);
         Section section = sectionRepository.findById(section_id).orElseThrow(() ->
                 new NotFoundException("Section with ID: " + section_id + " does not exist!"));
@@ -37,7 +37,6 @@ public class TopicService {
         topic.setUser(user);
 
         topicRepository.save(topic);
-        return topicMapper.mapToDto(topic);
     }
 
     @Transactional(readOnly = true)
@@ -72,13 +71,12 @@ public class TopicService {
     }
 
     @Transactional
-    public TopicDto updateTopic(Long id, TopicDto topicDto) {
+    public void updateTopic(Long id, TopicDto topicDto) {
         Topic topic = topicRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Topic with ID: " + id + " does not exist!"));
 
         topic.setTitle(topicDto.getTitle());
         topic.setDescription(topicDto.getDescription());
         topicRepository.save(topic);
-        return topicMapper.mapToDto(topic);
     }
 }
