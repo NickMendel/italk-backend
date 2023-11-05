@@ -1,5 +1,6 @@
 package de.mendel.forumitalk.security;
 
+import de.mendel.forumitalk.repository.UserRepository;
 import de.mendel.forumitalk.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,10 +18,10 @@ import java.util.List;
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public CustomUserDetailsService(@Lazy UserService userService) {
-        this.userService = userService;
+    public CustomUserDetailsService(@Lazy UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     /**
@@ -32,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userService.findUserByUsername(username);
+        var user = userRepository.findByUsername(username);
 
         return UserPrincipal.builder()
                 .username(user.getUsername())

@@ -54,8 +54,19 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("User with ID: " + id + " does not exist!"));
         return userMapper.mapToDto(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDto getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new NotFoundException("User with username: " + username + " does not exist!");
+        } else {
+            return userMapper.mapToDto(user);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -64,20 +75,23 @@ public class UserService {
         if (users.isEmpty()) {
             throw new NotFoundException("No users found!");
         } else {
-            return userMapper.mapListToDto(users));
+            return userMapper.mapListToDto(users);
         }
     }
 
     @Transactional
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("User with ID: " + id + " does not exist!"));
         userRepository.delete(user);
     }
 
     @Transactional
     public void updateUserEmail(Long id, UserUpdateEmailRequest userUpdateEmailRequest) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
-        if (userRepository.findByEmail(userUpdateEmailRequest.getNewEmail()) == null || user.getEmail().equals(userUpdateEmailRequest.getNewEmail())) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("User with ID: " + id + " does not exist!"));
+        if (userRepository.findByEmail(userUpdateEmailRequest.getNewEmail()) == null
+                || user.getEmail().equals(userUpdateEmailRequest.getNewEmail())) {
             user.setEmail(userUpdateEmailRequest.getNewEmail());
             userRepository.save(user);
         } else {
@@ -87,7 +101,8 @@ public class UserService {
 
     @Transactional
     public void changeUserPassword(Long id, ChangePasswordRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("User with ID: " + id + " does not exist!"));
         String hashedOldPassword = passwordEncoder.encode(request.getOldPassword());
         if (!user.getPassword().matches(hashedOldPassword)) {
             throw new NotFoundException("Old password is incorrect!");
