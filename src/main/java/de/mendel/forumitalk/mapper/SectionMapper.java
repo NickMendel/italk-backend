@@ -1,20 +1,20 @@
-package de.mendel.forumitalk.dto;
+package de.mendel.forumitalk.mapper;
 
+import de.mendel.forumitalk.dto.SectionDto;
 import de.mendel.forumitalk.model.Section;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class SectionMapper {
+    private final TopicMapper topicMapper;
 
     public SectionDto mapToDto(Section section) {
-        return new SectionDto(section.getSection_id(), section.getTitle(), section.getDescription(), section.getTopics());
-    }
-
-    public Section mapToEntity(SectionDto sectionDto) {
-        return new Section(sectionDto.getId(), sectionDto.getTitle(), sectionDto.getDescription(), sectionDto.getTopics());
+        return new SectionDto(section.getTitle(), section.getDescription());
     }
 
     public List<SectionDto> mapToDtoList(List<Section> sections) {

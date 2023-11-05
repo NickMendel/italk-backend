@@ -3,6 +3,7 @@ package de.mendel.forumitalk.dto;
 import de.mendel.forumitalk.model.Topic;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,21 +11,12 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class SectionDto {
 
-    private Long id;
-    @NotBlank
-    @Max(45)
+    @NotBlank(message = "Title is mandatory")
+    @Max(value = 45, message = "Title is too long")
     private String title;
-    @NotBlank
+    @NotBlank(message = "Description is mandatory")
     private String description;
-
-    private List<Topic> topics;
-
-    public SectionDto(Long id, String title, String description, List<Topic> topics) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.topics = topics;
-    }
 }
