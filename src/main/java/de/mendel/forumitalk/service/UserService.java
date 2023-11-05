@@ -55,7 +55,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDto getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with ID: " + id + " does not exist!"));
-        return userMapper.mapToDto(user)
+        return userMapper.mapToDto(user);
     }
 
     @Transactional(readOnly = true)
