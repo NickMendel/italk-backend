@@ -27,9 +27,6 @@ public class UserService {
         if (userRepository.findByUsername(userRegistrationRequest.getUsername()) == null) {
             if (userRepository.findByEmail(userRegistrationRequest.getEmail()) == null) {
                 String newPassword = userRegistrationRequest.getNewPassword();
-                if (newPassword == null || newPassword.isEmpty()) {
-                    throw new IllegalArgumentException("Password cannot be null or empty!");
-                }
                 String hashedPassword = passwordEncoder.encode(userRegistrationRequest.getNewPassword());
                 User newUser = new User();
                 newUser.setUsername(userRegistrationRequest.getUsername());
