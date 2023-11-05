@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("/api/v1")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request) {
         return authService.attemptLogin(request.getUsername(), request.getPassword());
     }

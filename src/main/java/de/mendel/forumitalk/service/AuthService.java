@@ -16,6 +16,7 @@ public class AuthService {
 
     private final JwtIssuer jwtIssuer;
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     public LoginResponse attemptLogin(String username, String password) {
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
@@ -31,6 +32,8 @@ public class AuthService {
 
         return LoginResponse.builder()
                 .accessToken(token)
+                .username(principal.getUsername())
+                .role(roles.get(0))
                 .build();
     }
 }
