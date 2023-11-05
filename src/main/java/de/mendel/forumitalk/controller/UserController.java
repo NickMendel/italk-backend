@@ -34,7 +34,8 @@ public class UserController {
     }
 
     @PostMapping("/profile/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody User user, @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<String> changePassword(@RequestBody User user,
+                                                 @RequestBody ChangePasswordRequest changePasswordRequest) {
         try {
             service.changeUserPassword(user.getUser_id(), changePasswordRequest);
             return ResponseEntity.ok("Password changed successfully!");
@@ -44,7 +45,8 @@ public class UserController {
     }
 
     @PutMapping("/profile/update-email")
-    public ResponseEntity<String> updateUserEmail(@RequestBody UserUpdateEmailRequest userUpdateEmailRequest, @RequestBody User user) {
+    public ResponseEntity<String> updateUserEmail(@RequestBody UserUpdateEmailRequest userUpdateEmailRequest,
+                                                  @RequestBody User user) {
         try {
             service.updateUserEmail(user.getUser_id(), userUpdateEmailRequest);
             return ResponseEntity.ok("Email updated successfully!");
